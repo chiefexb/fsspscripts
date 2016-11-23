@@ -9,6 +9,14 @@ import datetime
 import timeit
 import time
 from odsmod import *
+def quoted(a):
+    try:
+        st="'"+a+"'"
+    except:
+        st='Null'
+    return st
+def convert (a):
+    return a.decode('UTF8').encode('CP1251')
 class Profiler(object):
     def __enter__(self):
         self._startTime = time.time()
@@ -60,9 +68,14 @@ def main():
         cur = con.cursor()
         f2=file('./s.txt'  )
         l=f2.readlines()
-        numip= l[0]
+        numip= convert(l[0].rstrip().lstrip())
         print numip
-    
+        sql="select doc_ip_doc.id_docno,doc_ip_doc.id_docdate from doc_ip_doc join document on document.id=doc_ip_doc.id where  document.doc_number starting with  '"+numip+"'"
+        print sql
+        cur.execute(sql)
+        r=cur.fetchall() 
+        print sql,len(numip)
+        r[0][1]   
     con.close() 
 
 if __name__ == "__main__":
